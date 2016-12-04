@@ -11,7 +11,7 @@ import Firebase
 import FirebaseAuth
 
 
-class ContactsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ContactsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -21,6 +21,11 @@ class ContactsViewController: UIViewController, UITableViewDelegate, UITableView
     
     private var users = [User]()
     
+    private var filteresUsers:[User]!
+    
+    var inSearchMode:Bool = false
+    
+    
   
     
     var selectedUser:User!
@@ -29,12 +34,33 @@ class ContactsViewController: UIViewController, UITableViewDelegate, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        filteresUsers = users
+        searchBar.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
-        
+         searchBar.returnKeyType = UIReturnKeyType.done
         downloadUsers()
         // Do any additional setup after loading the view.
     }
+    
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        view.endEditing(true)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text == nil || searchBar.text == ""{
+            inSearchMode = false
+            tableView.reloadData()
+            view.endEditing(true)
+        }else{
+            inSearchMode = true
+            let lower = searchBar.text!.lowercased()
+            filteresUsers = users.filter({($0.firstName.range(of: lower) != nil)})
+            tableView.reloadData()
+        }
+    }
+ 
     
     func downloadUsers(){
         
@@ -90,7 +116,16 @@ class ContactsViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        
+        if inSearchMode{
+          return filteresUsers.count
+      
+        }else{
+            
+         return users.count
+        }
+
+       
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -101,11 +136,15 @@ class ContactsViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath) as? UserCell{
+            if inSearchMode{
+                let userF = filteresUsers[indexPath.row]
+                cell.updateUI(user: userF)
+            }else{
             
             let user = users[indexPath.row]
             
             cell.updateUI(user: user)
-            
+            }
             return cell
         }
         else{
