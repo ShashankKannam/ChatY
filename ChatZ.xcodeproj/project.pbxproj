@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA1E81851DF3D4BC009C4A72 /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1E81841DF3D4BC009C4A72 /* CurrentUser.swift */; };
+		BA1E81851DF3D4BC009C4A72 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1E81841DF3D4BC009C4A72 /* Users.swift */; };
+		BA1E81871DF40591009C4A72 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1E81861DF40591009C4A72 /* UserData.swift */; };
 		BA5C1E511DF3484E00213153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E501DF3484E00213153 /* AppDelegate.swift */; };
 		BA5C1E561DF3484E00213153 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA5C1E541DF3484E00213153 /* Main.storyboard */; };
 		BA5C1E581DF3484E00213153 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA5C1E571DF3484E00213153 /* Assets.xcassets */; };
@@ -26,7 +27,8 @@
 
 /* Begin PBXFileReference section */
 		62D600AC565F259086FADEA5 /* Pods-ChatZ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatZ.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatZ/Pods-ChatZ.release.xcconfig"; sourceTree = "<group>"; };
-		BA1E81841DF3D4BC009C4A72 /* CurrentUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
+		BA1E81841DF3D4BC009C4A72 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
+		BA1E81861DF40591009C4A72 /* UserData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		BA5C1E4D1DF3484E00213153 /* ChatZ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatZ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA5C1E501DF3484E00213153 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA5C1E551DF3484E00213153 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				BA5C1E741DF3618400213153 /* User.swift */,
+				BA1E81861DF40591009C4A72 /* UserData.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -125,7 +128,7 @@
 				BA5C1E6A1DF3544E00213153 /* GoogleService-Info.plist */,
 				BA5C1E6C1DF3548D00213153 /* AuthService.swift */,
 				BA5C1E6E1DF354B500213153 /* DataService.swift */,
-				BA1E81841DF3D4BC009C4A72 /* CurrentUser.swift */,
+				BA1E81841DF3D4BC009C4A72 /* Users.swift */,
 			);
 			name = "Services Constants";
 			sourceTree = "<group>";
@@ -271,7 +274,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BA1E81851DF3D4BC009C4A72 /* CurrentUser.swift in Sources */,
+				BA1E81871DF40591009C4A72 /* UserData.swift in Sources */,
+				BA1E81851DF3D4BC009C4A72 /* Users.swift in Sources */,
 				BA5C1E791DF361F500213153 /* UserCell.swift in Sources */,
 				BA5C1E681DF350A700213153 /* SignUpViewController.swift in Sources */,
 				BA5C1E631DF34FDD00213153 /* LoginViewController.swift in Sources */,

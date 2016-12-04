@@ -10,11 +10,17 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabase
 
-class CurrentUser{
+
+
+class Users{
     
     private var _currentUser:User!
     
-    public static let Current_User_Logged = CurrentUser()
+    public static var _savedUsersData = [UserData]()
+    
+    public static var Current_User_Logged = Users()
+    
+    public static var Current_Users = Users()
     
     var currentUser:User{
         set{
@@ -27,7 +33,18 @@ class CurrentUser{
         }
     }
     
- 
+    var savedUsersData:[UserData]{
+        set{
+            // getCurrentUser()
+            Users._savedUsersData = newValue
+        }
+        get{
+            
+            return Users._savedUsersData
+        }
+    }
+    
+    
     func getCurrentUser(){
         guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return

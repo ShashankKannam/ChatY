@@ -9,7 +9,7 @@
 import UIKit
 
 class UserCell: UITableViewCell {
-    
+        
     @IBOutlet weak var firstNameLBL: UILabel!
     
     @IBOutlet weak var contactImage: UIImageView!
@@ -18,10 +18,7 @@ class UserCell: UITableViewCell {
             super.awakeFromNib()
         }
     
-//    func updateUI(user:User) {
-//        firstNameLBL.text = user.firstName
-//        //contactImage.image =
-//    }
+
     
     
     func updateUI(user: User)
@@ -40,13 +37,18 @@ class UserCell: UITableViewCell {
                 let datax = try Data(contentsOf: url)
               
                 DispatchQueue.global().sync {
-                    self.contactImage.image = UIImage(data:datax)
+                    
+                    let image = UIImage(data:datax)
+                    self.contactImage.image = image
+
+                    Users._savedUsersData.append(UserData(uid: user.uid, firstName: user.firstName, profilePic: image!))
                 }
+                
             }
             catch let error as NSError{
                 print(error.debugDescription)
             }
         }
         
-    }
+}
 }

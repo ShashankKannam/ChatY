@@ -20,7 +20,7 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         loggedUserImg.isHidden = true
-        // getCurrentUser()
+         getCurrentUser()
     }
     
     

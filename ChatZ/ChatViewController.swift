@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ChatViewController: UIViewController {
 
@@ -32,20 +33,61 @@ class ChatViewController: UIViewController {
     }
     
     
-    
-    
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+ 
+         self.selectedUserName.text = selectedUser.firstName
+        downloadImage()
+        
+        for a in Users._savedUsersData{
+            if a.uid == selectedUser.uid{
+                self.selctedUserImg.image = a.profilePic
+                self.selctedUserImg.isHidden = false
+                self.selctedUserImg.layer.cornerRadius = self.selctedUserImg.frame.size.height/2
+                self.selctedUserImg.clipsToBounds = true
 
+            }
+        }
+        
+        //self.selctedUserImg.image = Users._savedUsersData[selectedUser]
+        
+        selctedUserImg.isHidden = true
         // Do any additional setup after loading the view.
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        downloadImage()
+    }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    func downloadImage() {
+        
+        let url = URL(string: selectedUser.profilePicURL)!
+        
+        
+        DispatchQueue.global().async {
+            do
+            {
+                let datax = try Data(contentsOf: url)
+                
+                DispatchQueue.global().sync {
+                    self.selctedUserImg.image = UIImage(data:datax)
+                    self.selctedUserImg.isHidden = false
+                    self.selctedUserImg.layer.cornerRadius = self.selctedUserImg.frame.size.height/2
+                    self.selctedUserImg.clipsToBounds = true
+                }
+            }
+            catch let error as NSError{
+                print(error.debugDescription)
+            }
+        }
+        
     }
     
 

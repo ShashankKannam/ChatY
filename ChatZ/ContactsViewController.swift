@@ -21,7 +21,11 @@ class ContactsViewController: UIViewController, UITableViewDelegate, UITableView
     
     private var users = [User]()
     
+  
+    
     var selectedUser:User!
+    
+    var selectedUserData:UserData!
     
     override func viewDidLoad() {
         super.viewDidLoad()
