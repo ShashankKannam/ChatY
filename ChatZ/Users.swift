@@ -10,7 +10,9 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabase
 
-
+struct MyVariables {
+    static var me = User(uid: "", firstName: "", profilePic: "")
+}
 
 class Users{
     

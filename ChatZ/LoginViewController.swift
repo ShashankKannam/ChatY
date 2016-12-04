@@ -130,6 +130,7 @@ class LoginViewController: UIViewController {
                         if let profileUrl = dict["profilePicURL"] as? Dictionary<String, AnyObject> {
                             if let proURL = profileUrl["profilePicURL"] as? String {
                                 self.currentUser = User(uid: uid, firstName: firstName, profilePic: proURL)
+                                MyVariables.me = User(uid: uid, firstName: firstName, profilePic: proURL)
                                 if self.currentUser.profilePicURL.isEqual("") {
                                     self.loggedUserImg.isHidden = true
                                 }

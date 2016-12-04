@@ -16,6 +16,8 @@
 
 let FIR_CHILD_USERS = "users"
 
+let FIR_CHILD_MESSAGES = "chat"
+
 import Foundation
 import Firebase
 import FirebaseDatabase
@@ -40,6 +42,11 @@ class DataService {
     
     var usersRef: FIRDatabaseReference {
         return mainRef.child(FIR_CHILD_USERS)
+    }
+    
+    
+    var chatRef: FIRDatabaseReference {
+        return mainRef.child(FIR_CHILD_MESSAGES)
     }
     
     var mainStorageRef: FIRStorageReference {

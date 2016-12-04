@@ -22,6 +22,7 @@
 		BA5C1E751DF3618400213153 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E741DF3618400213153 /* User.swift */; };
 		BA5C1E791DF361F500213153 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E781DF361F500213153 /* UserCell.swift */; };
 		BA5C1E7B1DF3669F00213153 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E7A1DF3669F00213153 /* ChatViewController.swift */; };
+		BAF5ADDB1DF44237008AEB3E /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF5ADDA1DF44237008AEB3E /* ChatCell.swift */; };
 		D240A4406EA3DC71DC2D6329 /* Pods_ChatZ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD21D00C6281CD8FCB25F1F8 /* Pods_ChatZ.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		BA5C1E741DF3618400213153 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BA5C1E781DF361F500213153 /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		BA5C1E7A1DF3669F00213153 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		BAF5ADDA1DF44237008AEB3E /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 		DD21D00C6281CD8FCB25F1F8 /* Pods_ChatZ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatZ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B391316F1E34762CD8668 /* Pods-ChatZ.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatZ.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatZ/Pods-ChatZ.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -107,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				BA5C1E781DF361F500213153 /* UserCell.swift */,
+				BAF5ADDA1DF44237008AEB3E /* ChatCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				BA1E81851DF3D4BC009C4A72 /* Users.swift in Sources */,
 				BA5C1E791DF361F500213153 /* UserCell.swift in Sources */,
 				BA5C1E681DF350A700213153 /* SignUpViewController.swift in Sources */,
+				BAF5ADDB1DF44237008AEB3E /* ChatCell.swift in Sources */,
 				BA5C1E631DF34FDD00213153 /* LoginViewController.swift in Sources */,
 				BA5C1E511DF3484E00213153 /* AppDelegate.swift in Sources */,
 				BA5C1E6D1DF3548D00213153 /* AuthService.swift in Sources */,

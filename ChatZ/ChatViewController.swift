@@ -9,9 +9,16 @@
 import UIKit
 import Firebase
 
-class ChatViewController: UIViewController {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     var selectedUser:User!
+    
+    var me:User!
+        
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    
     
     @IBOutlet weak var selctedUserImg: UIImageView!
     
@@ -33,8 +40,30 @@ class ChatViewController: UIViewController {
     }
     
     
+    
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+    
+    
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        me = MyVariables.me
  
          self.selectedUserName.text = selectedUser.firstName
         downloadImage()
