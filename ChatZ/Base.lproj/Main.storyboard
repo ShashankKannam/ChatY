@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="xTS-ln-kkV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="z37-uU-clO">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -181,7 +181,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nij-9G-6fH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="381.60000000000002" y="-827.13643178410803"/>
+            <point key="canvasLocation" x="434" y="-874"/>
         </scene>
         <!--Contacts View Controller-->
         <scene sceneID="h98-tf-FKi">
@@ -277,11 +277,31 @@
                         <outlet property="tableView" destination="60X-4F-FVe" id="J1U-iz-xwh"/>
                         <segue destination="xTS-ln-kkV" kind="showDetail" identifier="LoginVC" id="Ai0-17-BV5"/>
                         <segue destination="z37-uU-clO" kind="showDetail" identifier="ChatVC" id="Gve-dZ-VRo"/>
+                        <segue destination="8jr-aD-3BM" kind="showDetail" identifier="toGroupChatVC" id="UpH-7k-u98"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ymz-ip-iPD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="382" y="-27"/>
+        </scene>
+        <!--Group Chat View Controller-->
+        <scene sceneID="KOB-ve-SNz">
+            <objects>
+                <viewController id="a6W-hD-t3q" customClass="GroupChatViewController" customModule="ChatZ" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="tOh-Zp-pEj"/>
+                        <viewControllerLayoutGuide type="bottom" id="oWN-no-qXr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="MwL-bw-HL2">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="gYA-8o-cvo"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tlo-Rz-9r4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1320.8" y="844.22788605697156"/>
         </scene>
         <!--Chat View Controller-->
         <scene sceneID="Ban-14-xAv">
@@ -433,6 +453,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2bW-G9-VhT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1332" y="-16"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="CId-Da-POd">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8jr-aD-3BM" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gSS-By-1dC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="a6W-hD-t3q" kind="relationship" relationship="rootViewController" id="Ew2-Yq-W6c"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JWz-YY-JFc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="381.60000000000002" y="843.32833583208401"/>
         </scene>
     </scenes>
     <resources>

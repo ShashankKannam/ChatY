@@ -20,7 +20,32 @@ class UserCell: UITableViewCell {
     
 
     func updateGroup(group: Group){
+        self.contactImage.layer.cornerRadius = self.contactImage.frame.size.height/2
+        self.contactImage.clipsToBounds = true
         
+        firstNameLBL.text = group.groupName
+        
+        let url = URL(string: group.groupName)!
+        
+        
+        DispatchQueue.global().async {
+            do
+            {
+                let datax = try Data(contentsOf: url)
+                
+                DispatchQueue.global().sync {
+                    
+                    let image = UIImage(data:datax)
+                    self.contactImage.image = image
+                    
+                    //Users._savedUsersData.append(UserData(uid: , firstName: user.firstName, profilePic: image!))
+                }
+                
+            }
+            catch let error as NSError{
+                print(error.debugDescription)
+            }
+        }
     }
     
     

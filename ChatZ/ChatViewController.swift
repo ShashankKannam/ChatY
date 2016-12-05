@@ -20,49 +20,50 @@ class ChatViewController: JSQMessagesViewController {
 
     var selectedUser:User!
     
+    var reverseMessages = [JSQMessage]()
+    
     var messages = [JSQMessage]()
+    var tempMessages = [JSQMessage]()
     
     lazy var outgoingBubbleImageView: JSQMessagesBubbleImage = self.setupOutgoingBubble()
     lazy var incomingBubbleImageView: JSQMessagesBubbleImage = self.setupIncomingBubble()
     
 
+    //
+
     func getPreviousChat(completed: done){
   
         DataService.instance.chatRef.observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
             
-               print("in here......and not in messages....\(snapshot.value)")
+              // print("in here......and not in messages....\(snapshot.value)")
             
             if let messagesk = snapshot.value as? Dictionary<String, AnyObject>{
-                  print("in here.........at msgs.\(messagesk)")
-              //  let loop = messagesk.count
-               // var start = 1
+                 // print("in here.........at msgs.\(messagesk)")
                   let num = messagesk.count + 1
                    self.nextNumber = "\(num)"
                    print("in here..........\(self.nextNumber)......= \(num)")
-                
-               // while(start == loop){
-                  //  if let single = messagesk["\(start)A"] as? Dictionary<String, String>{
-                 //   self.messages.append(JSQMessage(senderId: single["message"], displayName: single["senderID"], text: single["senderName"]))
-                 //   print("----------------appended---------\(self.messages)")
-                //    }
-                 //   start += 1
-               // }
                 
                 for (_, valueK) in messagesk{
                     
                     if let single = valueK as? Dictionary<String, String>{
                         print("here details as")
                        // print(single["message"])
+                        
+                        self.didPressSend(UIButton(), withMessageText: single["message"], senderId: single["senderID"], senderDisplayName: single["senderName"], date: Date())
+                        
                         self.messages.append(JSQMessage(senderId: single["senderID"], displayName: single["senderName"], text: single["message"]))
+                        
                     }
                 }
          
         }
         }
-        finishReceivingMessage(animated: true)
+        messages.reversed()
+        //finishReceivingMessage(animated: true)
         completed()
    }
 
+    
     
     
     func getCurrentUser(){
@@ -94,15 +95,18 @@ class ChatViewController: JSQMessagesViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        messages = [JSQMessage]()
+        reverseMessages = [JSQMessage]()
+      //  downloadMessages()
         //self.navigationItem.title = selectedUser.firstName
-        
         self.senderId = "2"
         self.senderDisplayName = "govind"
-        
+        getCurrentUser()
+       //collectionView.reloadData()
         getPreviousChat { 
-           getCurrentUser()
+          // downloads data
         }
+        // collectionView.reloadData()
         // Do any additional setup after loading the view.
     }
 
@@ -115,18 +119,25 @@ class ChatViewController: JSQMessagesViewController {
     
 
     override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
+
+        DataService.instance.sendMyMessgae(chatNumber: "\(nextNumber)A", senderID: senderId, senderName: senderDisplayName, message: text)
+            //finishSendingMessage(animated: true)
+        collectionView.reloadData()
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
        // getPreviousChat {
-            DataService.instance.sendMyMessgae(chatNumber: "\(nextNumber)A", senderID: senderId, senderName: senderDisplayName, message: text)
-           messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, text: text))
-            JSQSystemSoundPlayer.jsq_playMessageSentSound()
-            finishSendingMessage()
-            collectionView.reloadData()
-       // }
+            
+        //}
         
     }
+
     
-    
-    
+//    override func viewWillAppear(_ animated: Bool) {
+//        messages = [JSQMessage]()
+//        getPreviousChat {
+//            collectionView.reloadData()
+//        }
+//    }
+//    
     
     
     override func didPressAccessoryButton(_ sender: UIButton!) {
@@ -139,13 +150,17 @@ class ChatViewController: JSQMessagesViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
-        let message = messages[indexPath.item]
         
+        let message = messages[indexPath.item]
         if message.senderId == senderId {
             cell.textView?.textColor = UIColor.white
+            cell.cellBottomLabel.text = message.senderDisplayName
         } else {
             cell.textView?.textColor = UIColor.black
+            cell.messageBubbleTopLabel.text = message.senderDisplayName
         }
+        
+        
         return cell
     }
     
@@ -182,20 +197,17 @@ class ChatViewController: JSQMessagesViewController {
         return bubbleImageFactory!.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
     }
     
-    
-    override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAt indexPath: IndexPath!) -> NSAttributedString! {
-         return NSAttributedString(string: messages[indexPath.item].senderDisplayName)
-    }
-    
+
      func collectionView(collectionView: JSQMessagesCollectionView?, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-            return NSAttributedString(string: messages[indexPath.row].senderDisplayName)
+        
+            return NSAttributedString(string: messages[indexPath.item].senderDisplayName)
     }
+    
     
      func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return 13 //or what ever height you want to give
     }
-    
- 
+
     
     /*
     // MARK: - Navigation
