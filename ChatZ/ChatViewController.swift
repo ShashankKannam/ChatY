@@ -2,124 +2,198 @@
 //  ChatViewController.swift
 //  ChatZ
 //
-//  Created by IOS Course Project on 12/3/16.
+//  Created by IOS Course Project on 12/4/16.
 //  Copyright © 2016 IOS Course Projectvb. All rights reserved.
 //
 
 import UIKit
+import JSQMessagesViewController
 import Firebase
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+typealias done = () -> ()
+
+class ChatViewController: JSQMessagesViewController {
+    
+    var nextNumber = "1";
+    
+    var currentUser:ChatUser!
 
     var selectedUser:User!
     
-    var me:User!
-        
+    var messages = [JSQMessage]()
     
-    @IBOutlet weak var tableView: UITableView!
+    lazy var outgoingBubbleImageView: JSQMessagesBubbleImage = self.setupOutgoingBubble()
+    lazy var incomingBubbleImageView: JSQMessagesBubbleImage = self.setupIncomingBubble()
+    
+
+    func getPreviousChat(completed: done){
+  
+        DataService.instance.chatRef.observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+            
+               print("in here......and not in messages....\(snapshot.value)")
+            
+            if let messagesk = snapshot.value as? Dictionary<String, AnyObject>{
+                  print("in here.........at msgs.\(messagesk)")
+              //  let loop = messagesk.count
+               // var start = 1
+                  let num = messagesk.count + 1
+                   self.nextNumber = "\(num)"
+                   print("in here..........\(self.nextNumber)......= \(num)")
+                
+               // while(start == loop){
+                  //  if let single = messagesk["\(start)A"] as? Dictionary<String, String>{
+                 //   self.messages.append(JSQMessage(senderId: single["message"], displayName: single["senderID"], text: single["senderName"]))
+                 //   print("----------------appended---------\(self.messages)")
+                //    }
+                 //   start += 1
+               // }
+                
+                for (key, valueK) in messagesk{
+                    
+                    if let single = valueK as? Dictionary<String, String>{
+                        print("here details as")
+                        print(single["message"])
+                        self.messages.append(JSQMessage(senderId: single["senderID"], displayName: single["senderName"], text: single["message"]))
+                    }
+                }
+         
+        }
+        }
+        finishReceivingMessage(animated: true)
+        completed()
+   }
+
     
     
-    
-    @IBOutlet weak var selctedUserImg: UIImageView!
-    
-    
-    @IBOutlet weak var selectedUserName: UILabel!
-    
-    @IBOutlet weak var chatBoxTF: UITextField!
-    
-    
-    @IBAction func back(_ sender: Any) {
-        
-        dismiss(animated: true, completion: nil)
-    }
-    
-    
-    
-    @IBAction func sendText(_ sender: UIButton) {
-        
-    }
-    
-    
-    
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-    
-    
-    
-    
+    func getCurrentUser(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
+     
+        DataService.instance.usersRef.child(uid).observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+           // print(snapshot.value)
+            
+            
+            
+            
+            if let dict = snapshot.value as? Dictionary<String, AnyObject> {
+                if let profile = dict["profile"] as? Dictionary<String, AnyObject> {
+                    if let firstName = profile["firstName"] as? String {
+                        self.currentUser = ChatUser(uid: uid, firstName: firstName)
+                        self.senderId = uid
+                        self.senderDisplayName = firstName
+
+                    }
+                }
+            }
+        }
+                }
+
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        me = MyVariables.me
- 
-         self.selectedUserName.text = selectedUser.firstName
-        downloadImage()
+        //self.navigationItem.title = selectedUser.firstName
         
-        for a in Users._savedUsersData{
-            if a.uid == selectedUser.uid{
-                self.selctedUserImg.image = a.profilePic
-                self.selctedUserImg.isHidden = false
-                self.selctedUserImg.layer.cornerRadius = self.selctedUserImg.frame.size.height/2
-                self.selctedUserImg.clipsToBounds = true
-
-            }
+        self.senderId = "2"
+        self.senderDisplayName = "govind"
+        
+        getPreviousChat { 
+           getCurrentUser()
         }
-        
-        //self.selctedUserImg.image = Users._savedUsersData[selectedUser]
-        
-        selctedUserImg.isHidden = true
         // Do any additional setup after loading the view.
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        downloadImage()
-    }
-    
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+  
     
     
-    func downloadImage() {
-        
-        let url = URL(string: selectedUser.profilePicURL)!
-        
-        
-        DispatchQueue.global().async {
-            do
-            {
-                let datax = try Data(contentsOf: url)
-                
-                DispatchQueue.global().sync {
-                    self.selctedUserImg.image = UIImage(data:datax)
-                    self.selctedUserImg.isHidden = false
-                    self.selctedUserImg.layer.cornerRadius = self.selctedUserImg.frame.size.height/2
-                    self.selctedUserImg.clipsToBounds = true
-                }
-            }
-            catch let error as NSError{
-                print(error.debugDescription)
-            }
-        }
+
+    override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
+       // getPreviousChat {
+            DataService.instance.sendMyMessgae(chatNumber: "\(nextNumber)A", senderID: senderId, senderName: senderDisplayName, message: text)
+           messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, text: text))
+            JSQSystemSoundPlayer.jsq_playMessageSentSound()
+            finishSendingMessage()
+            collectionView.reloadData()
+       // }
         
     }
     
-
+    
+    
+    
+    
+    override func didPressAccessoryButton(_ sender: UIButton!) {
+        //
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
+        let message = messages[indexPath.item]
+        
+        if message.senderId == senderId {
+            cell.textView?.textColor = UIColor.white
+        } else {
+            cell.textView?.textColor = UIColor.black
+        }
+        return cell
+    }
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
+        return messages[indexPath.item]
+    }
+    
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
+        let message = messages[indexPath.item] // 1
+        if message.senderId == senderId { // 2
+            return outgoingBubbleImageView
+        } else { // 3
+            return incomingBubbleImageView
+        }    }
+    
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAt indexPath: IndexPath!) -> JSQMessageAvatarImageDataSource! {
+        return nil
+    }
+    
+    @IBAction func back(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+    private func setupOutgoingBubble() -> JSQMessagesBubbleImage {
+        let bubbleImageFactory = JSQMessagesBubbleImageFactory()
+        return bubbleImageFactory!.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
+    }
+    
+    private func setupIncomingBubble() -> JSQMessagesBubbleImage {
+        let bubbleImageFactory = JSQMessagesBubbleImageFactory()
+        return bubbleImageFactory!.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
+    }
+    
+    
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForCellBottomLabelAt indexPath: IndexPath!) -> NSAttributedString! {
+         return NSAttributedString(string: messages[indexPath.item].senderDisplayName)
+    }
+    
+     func collectionView(collectionView: JSQMessagesCollectionView?, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+            return NSAttributedString(string: self.senderDisplayName)
+    }
+    
+     func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
+        return 13 //or what ever height you want to give
+    }
     /*
     // MARK: - Navigation
 

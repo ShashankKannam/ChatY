@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA12D9901DF5778D00EB89C5 /* GroupChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12D98F1DF5778D00EB89C5 /* GroupChatViewController.swift */; };
+		BA12D9921DF5787700EB89C5 /* RegisterGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12D9911DF5787700EB89C5 /* RegisterGroupViewController.swift */; };
+		BA12D9941DF5859F00EB89C5 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12D9931DF5859F00EB89C5 /* Group.swift */; };
 		BA1E81851DF3D4BC009C4A72 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1E81841DF3D4BC009C4A72 /* Users.swift */; };
 		BA1E81871DF40591009C4A72 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1E81861DF40591009C4A72 /* UserData.swift */; };
+		BA3452701DF44A70005A7663 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA34526F1DF44A70005A7663 /* ChatViewController.swift */; };
 		BA5C1E511DF3484E00213153 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E501DF3484E00213153 /* AppDelegate.swift */; };
 		BA5C1E561DF3484E00213153 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA5C1E541DF3484E00213153 /* Main.storyboard */; };
 		BA5C1E581DF3484E00213153 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA5C1E571DF3484E00213153 /* Assets.xcassets */; };
@@ -21,15 +25,19 @@
 		BA5C1E731DF35E7D00213153 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E721DF35E7D00213153 /* ContactsViewController.swift */; };
 		BA5C1E751DF3618400213153 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E741DF3618400213153 /* User.swift */; };
 		BA5C1E791DF361F500213153 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E781DF361F500213153 /* UserCell.swift */; };
-		BA5C1E7B1DF3669F00213153 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5C1E7A1DF3669F00213153 /* ChatViewController.swift */; };
+		BA6456A91DF51D7A0081BE7F /* ChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6456A81DF51D7A0081BE7F /* ChatUser.swift */; };
 		BAF5ADDB1DF44237008AEB3E /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF5ADDA1DF44237008AEB3E /* ChatCell.swift */; };
 		D240A4406EA3DC71DC2D6329 /* Pods_ChatZ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD21D00C6281CD8FCB25F1F8 /* Pods_ChatZ.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		62D600AC565F259086FADEA5 /* Pods-ChatZ.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatZ.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatZ/Pods-ChatZ.release.xcconfig"; sourceTree = "<group>"; };
+		BA12D98F1DF5778D00EB89C5 /* GroupChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupChatViewController.swift; sourceTree = "<group>"; };
+		BA12D9911DF5787700EB89C5 /* RegisterGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterGroupViewController.swift; sourceTree = "<group>"; };
+		BA12D9931DF5859F00EB89C5 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		BA1E81841DF3D4BC009C4A72 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		BA1E81861DF40591009C4A72 /* UserData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		BA34526F1DF44A70005A7663 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		BA5C1E4D1DF3484E00213153 /* ChatZ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatZ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA5C1E501DF3484E00213153 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA5C1E551DF3484E00213153 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -44,7 +52,7 @@
 		BA5C1E721DF35E7D00213153 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		BA5C1E741DF3618400213153 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		BA5C1E781DF361F500213153 /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
-		BA5C1E7A1DF3669F00213153 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		BA6456A81DF51D7A0081BE7F /* ChatUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		BAF5ADDA1DF44237008AEB3E /* ChatCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 		DD21D00C6281CD8FCB25F1F8 /* Pods_ChatZ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatZ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B391316F1E34762CD8668 /* Pods-ChatZ.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatZ.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatZ/Pods-ChatZ.debug.xcconfig"; sourceTree = "<group>"; };
@@ -101,6 +109,8 @@
 			children = (
 				BA5C1E741DF3618400213153 /* User.swift */,
 				BA1E81861DF40591009C4A72 /* UserData.swift */,
+				BA6456A81DF51D7A0081BE7F /* ChatUser.swift */,
+				BA12D9931DF5859F00EB89C5 /* Group.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -120,7 +130,9 @@
 				BA5C1E621DF34FDD00213153 /* LoginViewController.swift */,
 				BA5C1E671DF350A700213153 /* SignUpViewController.swift */,
 				BA5C1E721DF35E7D00213153 /* ContactsViewController.swift */,
-				BA5C1E7A1DF3669F00213153 /* ChatViewController.swift */,
+				BA34526F1DF44A70005A7663 /* ChatViewController.swift */,
+				BA12D98F1DF5778D00EB89C5 /* GroupChatViewController.swift */,
+				BA12D9911DF5787700EB89C5 /* RegisterGroupViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -277,17 +289,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA12D9901DF5778D00EB89C5 /* GroupChatViewController.swift in Sources */,
 				BA1E81871DF40591009C4A72 /* UserData.swift in Sources */,
 				BA1E81851DF3D4BC009C4A72 /* Users.swift in Sources */,
+				BA12D9941DF5859F00EB89C5 /* Group.swift in Sources */,
 				BA5C1E791DF361F500213153 /* UserCell.swift in Sources */,
 				BA5C1E681DF350A700213153 /* SignUpViewController.swift in Sources */,
 				BAF5ADDB1DF44237008AEB3E /* ChatCell.swift in Sources */,
 				BA5C1E631DF34FDD00213153 /* LoginViewController.swift in Sources */,
 				BA5C1E511DF3484E00213153 /* AppDelegate.swift in Sources */,
 				BA5C1E6D1DF3548D00213153 /* AuthService.swift in Sources */,
+				BA12D9921DF5787700EB89C5 /* RegisterGroupViewController.swift in Sources */,
+				BA6456A91DF51D7A0081BE7F /* ChatUser.swift in Sources */,
 				BA5C1E6F1DF354B500213153 /* DataService.swift in Sources */,
 				BA5C1E731DF35E7D00213153 /* ContactsViewController.swift in Sources */,
-				BA5C1E7B1DF3669F00213153 /* ChatViewController.swift in Sources */,
+				BA3452701DF44A70005A7663 /* ChatViewController.swift in Sources */,
 				BA5C1E751DF3618400213153 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -418,6 +434,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = IOS.ChatZ;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -431,6 +448,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = IOS.ChatZ;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

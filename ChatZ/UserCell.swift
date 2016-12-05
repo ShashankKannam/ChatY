@@ -19,6 +19,9 @@ class UserCell: UITableViewCell {
         }
     
 
+    func updateGroup(group: Group){
+        
+    }
     
     
     func updateUI(user: User)

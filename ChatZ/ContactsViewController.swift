@@ -26,7 +26,7 @@ class ContactsViewController: UIViewController, UITableViewDelegate, UITableView
     var inSearchMode:Bool = false
     
     
-  
+  var group:Group!
     
     var selectedUser:User!
     

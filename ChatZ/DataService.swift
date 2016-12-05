@@ -22,7 +22,7 @@ import Foundation
 import Firebase
 import FirebaseDatabase
 import FirebaseStorage
-//import FirebaseAuth
+import FirebaseAuth
 
 class DataService {
     
@@ -71,6 +71,15 @@ class DataService {
         mainRef.child(FIR_CHILD_USERS).child(uid).child("profilePicURL").setValue(profileImage)
     }
     
+    func sendMyMessgae(chatNumber: String, senderID: String, senderName: String, message: String){
+        let messageDetails:  Dictionary<String, AnyObject> = ["message": message as AnyObject, "senderID": senderID as AnyObject, "senderName": senderName as AnyObject]
+        mainRef.child(FIR_CHILD_MESSAGES).child("\(chatNumber)").setValue(messageDetails)
+    }
+    
+    func saveGroup(groupName: String, chatNumber: String, senderID: String, senderName: String, message: String){
+         let messageDetails:  Dictionary<String, AnyObject> = ["message": message as AnyObject, "senderID": senderID as AnyObject, "senderName": senderName as AnyObject]
+         mainRef.child(FIR_CHILD_MESSAGES).child(groupName).child(chatNumber).setValue(messageDetails)
+    }
     
     //    func sendMediaPullRequest(senderUID: String, sendingTo:Dictionary<String, User>, mediaURL: URL, textSnippet: String? = nil) {
     //
