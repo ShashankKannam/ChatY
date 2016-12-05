@@ -18,6 +18,8 @@ let FIR_CHILD_USERS = "users"
 
 let FIR_CHILD_MESSAGES = "chat"
 
+let FIR_CHILD_GROUPS = "groups"
+
 import Foundation
 import Firebase
 import FirebaseDatabase
@@ -57,6 +59,11 @@ class DataService {
         return mainStorageRef.child("profile_images")
     }
     
+    var groupImagesStorageRef: FIRStorageReference {
+        return mainStorageRef.child("group_images")
+    }
+    
+    
     //    var videoStorageRef: FIRStorageReference {
     //        return mainStorageRef.child("videos")
     //    }
@@ -76,10 +83,17 @@ class DataService {
         mainRef.child(FIR_CHILD_MESSAGES).child("\(chatNumber)").setValue(messageDetails)
     }
     
-    func saveGroup(groupName: String, chatNumber: String, senderID: String, senderName: String, message: String){
+    func saveGroupChat(groupName: String, chatNumber: String, senderID: String, senderName: String, message: String){
          let messageDetails:  Dictionary<String, AnyObject> = ["message": message as AnyObject, "senderID": senderID as AnyObject, "senderName": senderName as AnyObject]
-         mainRef.child(FIR_CHILD_MESSAGES).child(groupName).child(chatNumber).setValue(messageDetails)
+         mainRef.child(FIR_CHILD_MESSAGES).child(groupName).child("\(chatNumber)\(groupName)").setValue(messageDetails)
     }
+    
+    func saveGroupImage(_ groupName: String, groupPicURL: String) {
+        let groupImage: Dictionary<String, AnyObject> = ["groupPicURL": groupPicURL as AnyObject]
+        mainRef.child(FIR_CHILD_GROUPS).child(groupName).child("groupPicURL").setValue(groupImage)
+    }
+    
+    
     
     //    func sendMediaPullRequest(senderUID: String, sendingTo:Dictionary<String, User>, mediaURL: URL, textSnippet: String? = nil) {
     //

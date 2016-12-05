@@ -48,11 +48,11 @@ class ChatViewController: JSQMessagesViewController {
                  //   start += 1
                // }
                 
-                for (key, valueK) in messagesk{
+                for (_, valueK) in messagesk{
                     
                     if let single = valueK as? Dictionary<String, String>{
                         print("here details as")
-                        print(single["message"])
+                       // print(single["message"])
                         self.messages.append(JSQMessage(senderId: single["senderID"], displayName: single["senderName"], text: single["message"]))
                     }
                 }
@@ -188,12 +188,15 @@ class ChatViewController: JSQMessagesViewController {
     }
     
      func collectionView(collectionView: JSQMessagesCollectionView?, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
-            return NSAttributedString(string: self.senderDisplayName)
+            return NSAttributedString(string: messages[indexPath.row].senderDisplayName)
     }
     
      func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
         return 13 //or what ever height you want to give
     }
+    
+ 
+    
     /*
     // MARK: - Navigation
 

@@ -19,6 +19,8 @@ class Group{
         _date = date
     }
     
+    
+    
     var groupName:String{
         set{
             _groupName = newValue
