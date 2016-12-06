@@ -11,9 +11,22 @@ import Firebase
 
 typealias completionE =  () -> ()
 
-class RegisterGroupViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class RegisterGroupViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
-var groupProfileImageUrl = ""
+   var groupProfileImageUrl = ""
+    
+    var languageSelectted:String = ""
+    
+   var languageCode = ["English":"en","Japanese":"ja", "French":"fr", "Hindi":"hi", "Telugu":"te","Chinese":"zh","Russian":"ru"]
+   
+    var languages = [String]()
+    
+    @IBOutlet weak var languageButtuon: UIButton!
+    
+    
+    @IBOutlet weak var languagePicker: UIPickerView!
+    
+    
     
     @IBOutlet weak var imageProfile: UIImageView!
     
@@ -31,6 +44,8 @@ var groupProfileImageUrl = ""
         dismiss(animated: true, completion: nil)
     }
     
+
+    @IBOutlet weak var nextBtn: UIButton!
     
     @IBOutlet weak var toGetDateBtn: UIButton!
     
@@ -43,7 +58,35 @@ var groupProfileImageUrl = ""
         datePIcker.isHidden = false
         continueButton.isHidden = false
         createButton.isHidden = true
+        languageButtuon.isHidden = true
     }
+    
+    
+    @IBAction func selectLanguage(_ sender: UIButton) {
+        groupName.isHidden = true
+        toGetDateBtn.isHidden = true
+        datePIcker.isHidden = true
+        continueButton.isHidden = true
+        createButton.isHidden = true
+        languagePicker.isHidden = false
+       languageButtuon.isHidden = true
+        nextBtn.isHidden = false
+        
+    }
+  
+    @IBAction func nextPressed(_ sender: UIButton) {
+        
+        groupName.isHidden = false
+        toGetDateBtn.isHidden = false
+        datePIcker.isHidden = true
+        continueButton.isHidden = true
+        createButton.isHidden = false
+        languagePicker.isHidden = true
+        languageButtuon.isHidden = false
+        nextBtn.isHidden = true
+        
+    }
+  
     
 
     @IBAction func continuePressed(_ sender: UIButton) {
@@ -61,6 +104,8 @@ var groupProfileImageUrl = ""
         groupName.isHidden = false
         datePIcker.isHidden = true
         continueButton.isHidden = true
+        languageButtuon.isHidden = false
+        
         
         toGetDateBtn.setTitle(dateSelected, for: UIControlState.normal)
 
@@ -70,14 +115,26 @@ var groupProfileImageUrl = ""
     
     @IBAction func createPressed(_ sender: UIButton) {
         
-        group = Group(groupName: groupName.text!, date: dateSelected)
+        group = Group(groupName: groupName.text!, date: dateSelected, conversionLanguage: languageSelectted)
         print(group.date)
         print(group.groupName)
+        
+        
+            let newChannelRef = DataService.instance.mainRef.childByAutoId()
+            let channelItem = [
+                "name": group.groupName
+            ]
+            newChannelRef.setValue(channelItem)
+       
+
         
         self.uploadImage {
             DataService.instance.saveGroupChat(groupName: group.groupName, chatNumber: "1\(group.groupName)", senderID: "ChatZ", senderName: "Team ChatZ", message: "Welcome to \(group.groupName)!!")
             DataService.instance.saveUserImage(group.groupName, profilePicURL: groupProfileImageUrl)
         }
+        
+        
+        
         
         // Successfully registered
         let alert = UIAlertController(title: "Successfully registered your group!", message: "Click 'OK' to chat", preferredStyle: .alert)
@@ -89,11 +146,23 @@ var groupProfileImageUrl = ""
         
     }
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         datePIcker.isHidden = true
         continueButton.isHidden = true
-
+        languagePicker.delegate=self
+        
+        languagePicker.dataSource=self
+        
+        languagePicker.isHidden = true
+        nextBtn.isHidden = true
+        
+        for(key, value) in languageCode{
+            languages.append(key)
+        }
+        
         // Do any additional setup after loading the view.
     }
 
@@ -216,6 +285,29 @@ var groupProfileImageUrl = ""
         
          completed()
     }
+    
+    
+    
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return languages.count
+    }
+   
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return languages[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        languageButtuon.isHidden = false
+        languageSelectted = languages[row]
+        languageButtuon.setTitle(languageSelectted, for: .normal)
+        
+    }
+    
     
     /*
     // MARK: - Navigation

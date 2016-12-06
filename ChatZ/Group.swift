@@ -14,11 +14,26 @@ class Group{
     
     private var _date:String!
     
-    init(groupName: String, date: String) {
+     private var _conversionLanguage:String!
+    
+   private var _groupID:String!
+    
+    init(groupName: String, date: String, conversionLanguage:String) {
         _groupName = groupName
         _date = date
+        _conversionLanguage = conversionLanguage
     }
     
+    
+    var groupID:String{
+        set{
+            _groupID = newValue
+        }
+        get{
+            return _groupID
+            
+        }
+    }
     
     
     var groupName:String{
@@ -38,6 +53,17 @@ class Group{
         get{
         return _date
         
+        }
+    }
+    
+    
+    var conversionLanguage:String{
+        set{
+            _conversionLanguage = newValue
+        }
+        get{
+            return _conversionLanguage
+            
         }
     }
 }
