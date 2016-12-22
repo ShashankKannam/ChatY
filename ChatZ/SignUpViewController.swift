@@ -9,6 +9,9 @@
 import UIKit
 
 class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+   // signup class controller
+    
+    @IBOutlet weak var backgroundImageView: UIImageView!
     
     @IBOutlet weak var firstNameTF: UITextField!
     
@@ -24,77 +27,78 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     @IBOutlet weak var imageProfile: UIImageView!
     
+    //image picker
+    let picker = UIImagePickerController()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        blurEffect()
+        self.hideKeyboardWhenTappedAround()
+    }
+   
+    // blureffect to view
+    func blurEffect(){
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        backgroundImageView.addSubview(blurEffectView)
     }
     
+    // dismiss the current view
     @IBAction func cancel(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
     
+    // register the user
     @IBAction func Register(_ sender: UIButton) {
+    
         if let email = emailTF.text, let pass = passwordTF.text, let firstName = firstNameTF.text, let lastName = lastNameTF.text, (email.characters.count > 0 && pass.characters.count > 0 && firstName.characters.count > 0 && lastName.characters.count > 0) {
-            
-            //image
-            
-            //-------
-            AuthService.instance.signUP(email, password: pass, firstName: firstName, lastName: lastName, profilePic: imageProfile.image!, onComplete: { (errMsg, data) in
-                guard errMsg == nil else {
-                    let alert = UIAlertController(title: "Error Authentication", message: errMsg, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                    return
-                }
-                
-                // Successfully registered
+        
+        //-------signup  the user with firebase signup
+        AuthService.instance.signUP(email, password: pass, firstName: firstName, lastName: lastName, profilePic: imageProfile.image!, onComplete: { (errMsg, data) in
+           
+            guard errMsg == nil else {
+                let alert = UIAlertController(title: "Error Authentication", message: errMsg?.description, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+                return
+            }
+        //do stuff // Successfully registered
                 let alert = UIAlertController(title: "Successfully registered!", message: "Click 'OK' to login", preferredStyle: .alert)
                 let action = UIAlertAction(title: "OK", style: .default) { (action) -> Void in
                     self.dismiss(animated: true, completion: nil)
                 }
                 alert.addAction(action)
                 self.present(alert, animated: true, completion: nil)
-            })
-            
+        })
         } else {
+            // alert validation
             let alert = UIAlertController(title: "Details Required", message: "You must enter all details to register an account", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)
         }
     }
-    
-    
-    
-    
-    
-    
-    //image
-    
-    let picker = UIImagePickerController()
+
     
     @IBAction func changeImage(_ sender: UIButton) {
-        
-        
         // Action Sheet
         let alert:UIAlertController=UIAlertController(title: "Choose Image", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
-        
         // Action to openCamera()
         let cameraAction = UIAlertAction(title: "Camera", style: UIAlertActionStyle.default)
         {
             UIAlertAction in
             self.openCamera()
         }
-        
         // Action to openGallary()
         let gallaryAction = UIAlertAction(title: "Gallary", style: UIAlertActionStyle.default)
         {
             UIAlertAction in
             self.openGallary()
         }
-        
         // Action to cancel
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel)
-        
         // Adding all the actions
         alert.addAction(cameraAction)
         alert.addAction(gallaryAction)
@@ -154,4 +158,3 @@ class SignUpViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
 }
-

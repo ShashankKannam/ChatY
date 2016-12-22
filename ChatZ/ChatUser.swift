@@ -9,21 +9,16 @@
 import Foundation
 
 class ChatUser{
-    
-    
+  // chat data
     private var _firstName:String!
-    
     private var _uid:String!
-    
- 
-    
-    
+    // initializers
     init(uid:String, firstName: String) {
         _firstName = firstName
         _uid = uid
     }
 
-    
+    // getters and setters
     var firstName:String{
         set{
             _firstName = newValue

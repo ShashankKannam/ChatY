@@ -10,20 +10,23 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabase
 
+// struct to make copies of users
 struct MyVariables {
     static var me = User(uid: "", firstName: "", profilePic: "")
 }
 
 class Users{
-    
+  
+    // current user
     private var _currentUser:User!
-    
+    // saved user
     public static var _savedUsersData = [UserData]()
+    // logged user
+    public static var current_User_Logged = Users()
+    // logged users
+    public static var current_Users = Users()
     
-    public static var Current_User_Logged = Users()
-    
-    public static var Current_Users = Users()
-    
+    // getters and setters
     var currentUser:User{
         set{
            // getCurrentUser()
@@ -34,7 +37,7 @@ class Users{
             return _currentUser
         }
     }
-    
+    // users data getters and setters
     var savedUsersData:[UserData]{
         set{
             // getCurrentUser()
@@ -46,12 +49,12 @@ class Users{
         }
     }
     
-    
+  // get current users
     func getCurrentUser(){
         guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return
         }
-        
+        // To get cuurent logged users
         DataService.instance.usersRef.child(uid).observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
             
             if let dict = snapshot.value as? Dictionary<String, AnyObject> {

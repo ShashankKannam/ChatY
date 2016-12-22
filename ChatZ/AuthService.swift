@@ -19,7 +19,7 @@ import Firebase
 import FirebaseAuth
 //import FirebaseStorage
 
-
+// closure to do after completion
 typealias Completion = (_ errMsg: String?, _ data: AnyObject?) -> Void
 
 class AuthService {
@@ -29,7 +29,9 @@ class AuthService {
     static var instance: AuthService {
         return _instance
     }
+   
     
+  // login user method
     func login(_ email: String, password: String, onComplete: Completion?){
         
         FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
@@ -57,49 +59,49 @@ class AuthService {
     
     
     
-    
+  // for signing up the users
     func signUP(_ email: String, password: String, firstName: String, lastName: String, profilePic:UIImage, onComplete: Completion?) {
         
         FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
-            if error != nil {
-                if let errorCode = FIRAuthErrorCode(rawValue: error!._code) {
-                    if errorCode == .errorCodeUserNotFound{
-                        
-                        FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
-                            if error != nil {
-                                self.handleFirebaseError(error! as NSError, onComplete: onComplete)
-                            } else {
-                                if user?.uid != nil {
+        if error != nil {
+            if let errorCode = FIRAuthErrorCode(rawValue: error!._code) {
+                if errorCode == .errorCodeUserNotFound{
+                
+                FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
+                    if error != nil {
+                        self.handleFirebaseError(error! as NSError, onComplete: onComplete)
+                    } else {
+                        if user?.uid != nil {
+                            
+                            DataService.instance.saveUser(user!.uid, firstName: firstName, lastName: lastName)
+                            
+                            // profilePicUpload
+                            
+                            //-----
+                            let imageName = user!.uid.description
+                            
+                        let storageRef = DataService.instance.imagesStorageRef.child("\(imageName).png")
+                            
+                            if let uploadData = UIImagePNGRepresentation(profilePic){
+                                storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
                                     
-                                    DataService.instance.saveUser(user!.uid, firstName: firstName, lastName: lastName)
-                                    
-                                    // profilePicUpload
-                                    
-                                    //-----
-                                    let imageName = user!.uid.description
-                                    
-                                let storageRef = DataService.instance.imagesStorageRef.child("\(imageName).png")
-                                    
-                                    if let uploadData = UIImagePNGRepresentation(profilePic){
-                                        storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
-                                            
-                                            if error != nil {
-                                                print(error.debugDescription)
-                                                return
-                                            }
-                                            
-                                            if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
-                                                DataService.instance.saveUserImage(user!.uid, profilePicURL: profileImageUrl)
-                                            }
-                                        })
+                                    if error != nil {
+                                        print(error.debugDescription)
+                                        return
                                     }
                                     
-                                    //----
-
-                                }
+                                    if let profileImageUrl = metadata?.downloadURL()?.absoluteString {
+                                        DataService.instance.saveUserImage(user!.uid, profilePicURL: profileImageUrl)
+                                    }
+                                })
                             }
-                            
-                        })
+                                
+                                //----
+
+                            }
+                        }
+                        
+                    })
                         
                         
                     }
@@ -126,10 +128,10 @@ class AuthService {
             
         })
     }
+   
     
-    
+  // Handling the errors
     func handleFirebaseError(_ error: NSError, onComplete: Completion?) {
-        
         print(error.debugDescription)
         if let errorCode = FIRAuthErrorCode(rawValue: error.code) {
             switch (errorCode) {

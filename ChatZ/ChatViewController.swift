@@ -9,22 +9,24 @@
 import UIKit
 import Photos
 import Firebase
+//cocoapods chat view
 import JSQMessagesViewController
 
-
-
 final class ChatViewController: JSQMessagesViewController {
+
+    // : Properties
     
     var translatedText:String = ""
     
-    @IBAction func back(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    // MARK: Properties
     private let imageURLNotSetKey = "NOTSET"
     
-     var selectedUser:User!
+    var selectedUser:User!
+    
+    var selectedGroup:GroupContacts!
+    
+    var inChatGroup: GroupContacts!
+    
+    var inChatUser: User!
     
     var channelRef: FIRDatabaseReference?
     
@@ -40,6 +42,14 @@ final class ChatViewController: JSQMessagesViewController {
     private var photoMessageMap = [String: JSQPhotoMediaItem]()
     
     private var localTyping = false
+    
+    
+    lazy var outgoingBubbleImageView: JSQMessagesBubbleImage = self.setupOutgoingBubble()
+    lazy var incomingBubbleImageView: JSQMessagesBubbleImage = self.setupIncomingBubble()
+    
+    var languageTitle:String = "Hindi"
+    var languageCode = ["English":"en","Japanese":"ja", "French":"fr", "Hindi":"hi", "Telugu":"te","Chinese":"zh","Russian":"ru"]
+    
     var group: Group? {
         didSet {
             title = group?.groupName
@@ -56,23 +66,64 @@ final class ChatViewController: JSQMessagesViewController {
         }
     }
     
-    lazy var outgoingBubbleImageView: JSQMessagesBubbleImage = self.setupOutgoingBubble()
-    lazy var incomingBubbleImageView: JSQMessagesBubbleImage = self.setupIncomingBubble()
-    
     // MARK: View Lifecycle
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        //self.senderId = FIRAuth.auth()?.currentUser?.uid
-        
-        observeMessages()
-        self.senderId = "A"
-        self.senderDisplayName = "A"
-        // No avatars
-        collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSize.zero
-        collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
+  override func viewDidLoad() {
+    
+    super.viewDidLoad()
+
+     getCurrentUser()
+    
+    inChatGroup = GroupContacts(groupName: selectedNGroup.groupName, date: selectedNGroup.date, conversionLanguage: selectedNGroup.conversionLanguage, groupURL: selectedNGroup.groupURL)
+    
+    inChatUser = User(uid: selectedNUser.uid, firstName: selectedNUser.firstName, profilePic: selectedNUser.profilePicURL)
+    //\(selectedGroup.conversionLanguage)
+    
+    print("details of the selected group is \(inChatGroup.conversionLanguage)")
+    
+    //self.senderId = FIRAuth.auth()?.currentUser?.uid
+    
+    observeMessages()
+
+    // No avatars
+    collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSize.zero
+    collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSize.zero
+   }
+    
+   
+    // dismiss view
+    @IBAction func backPressed(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
     }
     
+    
+    // getcurrent user details
+    func getCurrentUser(){
+        self.senderId = "A"
+        self.senderDisplayName = "A"
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
+        // dataservice instance
+        DataService.instance.usersRef.child(uid).observeSingleEvent(of: .value) { (snapshot: FIRDataSnapshot) in
+            if let dict = snapshot.value as? Dictionary<String, AnyObject> {
+                if let profile = dict["profile"] as? Dictionary<String, AnyObject> {
+                    if let firstName = profile["firstName"] as? String {
+                        if let profileUrl = dict["profilePicURL"] as? Dictionary<String, AnyObject> {
+                            if (profileUrl["profilePicURL"] as? String) != nil {
+                                self.senderId = uid
+                                self.senderDisplayName = firstName
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+   // observe typing
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         observeTyping()
@@ -87,16 +138,19 @@ final class ChatViewController: JSQMessagesViewController {
         }
     }
     
-    // MARK: Collection view data source (and related) methods
+    // Collection view data source (and related) methods
     
+    //message data
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
         return messages[indexPath.item]
     }
     
+    //number of items(messages)
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
     
+    // bubbleview foe message data
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
         let message = messages[indexPath.item] // 1
         if message.senderId == senderId { // 2
@@ -106,28 +160,29 @@ final class ChatViewController: JSQMessagesViewController {
         }
     }
     
+    //cell for message customized
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAt: indexPath) as! JSQMessagesCollectionViewCell
-        
         let message = messages[indexPath.item]
-        
         if message.senderId == senderId { // 1
             cell.textView?.textColor = UIColor.white // 2
         } else {
             cell.textView?.textColor = UIColor.black // 3
         }
-        
         return cell
     }
     
+    //avatar - image
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAt indexPath: IndexPath!) -> JSQMessageAvatarImageDataSource! {
         return nil
     }
     
+    // height of collection view
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAt indexPath: IndexPath!) -> CGFloat {
         return 15
     }
     
+    // text attributed with name
     override func collectionView(_ collectionView: JSQMessagesCollectionView?, attributedTextForMessageBubbleTopLabelAt indexPath: IndexPath!) -> NSAttributedString? {
         let message = messages[indexPath.item]
         switch message.senderId {
@@ -142,12 +197,13 @@ final class ChatViewController: JSQMessagesViewController {
         }
     }
     
-    // MARK: Firebase related methods
     
-    private func observeMessages() {
-        messageRef = DataService.instance.mainRef.child("groups").child("messages")
+    // Firebase related methods
+    
+  private func observeMessages() {
+        let a = inChatGroup.groupName
+        messageRef = DataService.instance.mainRef.child("groups").child("\(a)").child("messages")
         let messageQuery = messageRef.queryLimited(toLast:25)
-        
         // We can use the observe method to listen for new
         // messages being written to the Firebase DB
         newMessageRefHandle = messageQuery.observe(.childAdded, with: { (snapshot) -> Void in
@@ -186,98 +242,92 @@ final class ChatViewController: JSQMessagesViewController {
         })
     }
     
-    private func fetchImageDataAtURL(_ photoURL: String, forMediaItem mediaItem: JSQPhotoMediaItem, clearsPhotoMessageMapOnSuccessForKey key: String?) {
-        let storageRef = FIRStorage.storage().reference(forURL: photoURL)
-        storageRef.data(withMaxSize: INT64_MAX){ (data, error) in
-            if let error = error {
-                print("Error downloading image data: \(error)")
+    // fetch image data
+  private func fetchImageDataAtURL(_ photoURL: String, forMediaItem mediaItem: JSQPhotoMediaItem, clearsPhotoMessageMapOnSuccessForKey key: String?) {
+    let storageRef = FIRStorage.storage().reference(forURL: photoURL)
+    storageRef.data(withMaxSize: INT64_MAX){ (data, error) in
+        if let error = error {
+            print("Error downloading image data: \(error)")
+            return
+        }
+        storageRef.metadata(completion: { (metadata, metadataErr) in
+            if let error = metadataErr {
+                print("Error downloading metadata: \(error)")
                 return
             }
+            if (metadata?.contentType == "image/gif") {
+               // mediaItem.image = UIImage.gifWithData(data!)
+            } else {
+                mediaItem.image = UIImage.init(data: data!)
+            }
+            self.collectionView.reloadData()
             
-            storageRef.metadata(completion: { (metadata, metadataErr) in
-                if let error = metadataErr {
-                    print("Error downloading metadata: \(error)")
-                    return
-                }
-                
-                if (metadata?.contentType == "image/gif") {
-                   // mediaItem.image = UIImage.gifWithData(data!)
-                } else {
-                    mediaItem.image = UIImage.init(data: data!)
-                }
-                self.collectionView.reloadData()
-                
-                guard key != nil else {
-                    return
-                }
-                self.photoMessageMap.removeValue(forKey: key!)
-            })
-        }
-    }
-    
-    private func observeTyping() {
-        let typingIndicatorRef = DataService.instance.mainRef.child("groups").child("typingIndicator")
-        userIsTypingRef = typingIndicatorRef.child(senderId)
-        userIsTypingRef.onDisconnectRemoveValue()
-        usersTypingQuery = typingIndicatorRef.queryOrderedByValue().queryEqual(toValue: true)
-        
-        usersTypingQuery.observe(.value) { (data: FIRDataSnapshot) in
-            
-            // You're the only typing, don't show the indicator
-            if data.childrenCount == 1 && self.isTyping {
+            guard key != nil else {
                 return
             }
-            
-            // Are there others typing?
-            self.showTypingIndicator = data.childrenCount > 0
-            self.scrollToBottom(animated: true)
-        }
+            self.photoMessageMap.removeValue(forKey: key!)
+        })
     }
+   }
+   
     
-    override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
+  // observe typing the data
+  private func observeTyping() {
+    let a = inChatGroup.groupName
+    let typingIndicatorRef = DataService.instance.mainRef.child("groups").child("\(a)").child("typingIndicator")
+    userIsTypingRef = typingIndicatorRef.child(senderId)
+    userIsTypingRef.onDisconnectRemoveValue()
+    usersTypingQuery = typingIndicatorRef.queryOrderedByValue().queryEqual(toValue: true)
+    usersTypingQuery.observe(.value) { (data: FIRDataSnapshot) in
+        // You're the only typing, don't show the indicator
+        if data.childrenCount == 1 && self.isTyping {
+            return
+        }
+        // Are there others typing?
+        self.showTypingIndicator = data.childrenCount > 0
+        self.scrollToBottom(animated: true)
+    }
+   }
+  
+    
+  // send the message
+  override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
+   convert(textS: text, completed:
+    {
+        // 1
+        let itemRef = messageRef.childByAutoId()
         
-    convert(textS: text, completed:
-        {
-            // 1
-            let itemRef = messageRef.childByAutoId()
-            
-           // text = translatedText
-            
-            // 2
-            let messageItem = [
-                "senderId": senderId!,
-                "senderName": senderDisplayName!,
-                "text": self.translatedText,
-                ]
-            
-            // 3
-            itemRef.setValue(messageItem)
-            
-            // 4
-            JSQSystemSoundPlayer.jsq_playMessageSentSound()
-            
-            // 5
-            finishSendingMessage()
-            isTyping = false
+       // text = translatedText
+        // 2
+        let messageItem = [
+            "senderId": senderId!,
+            "senderName": senderDisplayName!,
+            "text": self.translatedText,
+            ]
+        // 3
+        itemRef.setValue(messageItem)
+        // 4
+        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+        // 5
 
     })
-        
-        
-    
-    }
-  
-    //------------------------------
-    var languageTitle:String = "Hindi"
-    let languageCode = ["Japanese":"ja", "French":"fr", "Hindi":"hi"]
+    finishSendingMessage(animated: true)
+    isTyping = false
 
-    ///------------------------
+  }
+
+    
+    //convereted text from yandex
     func convert(textS:String, completed: completionE){
-    
-        let encodedString = textS
+       // let lang = languageCode["\(selectedGroup.conversionLanguage)"]
+        let encodedString = textS.addingPercentEncoding( withAllowedCharacters: NSCharacterSet.urlQueryAllowed)!
+        var code:String = ""
+        code = languageCode["\(inChatGroup.conversionLanguage)"]!
         
-   // let urlString = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160316T201633Z.3edd97cd482f5f99.44412180dddb0c1a07bd7ab38d4a746421932f28&text=\(encodedString)&lang=en-\(languageCode[languageTitle]!)"
+       // urlString	String	"https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160316T201633Z.3edd97cd482f5f99.44412180dddb0c1a07bd7ab38d4a746421932f28&text=Hi&lang=en-Optional(\"te\")"
 
-    let  urlString = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160316T201633Z.3edd97cd482f5f99.44412180dddb0c1a07bd7ab38d4a746421932f28&text=\(encodedString)&lang=en-hi"
+       let  urlString = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160316T201633Z.3edd97cd482f5f99.44412180dddb0c1a07bd7ab38d4a746421932f28&text=\(encodedString)&lang=en-\(code)"
+        
         var request = URLRequest(url: URL(string: urlString)!)
         
         let session = URLSession.shared
@@ -285,8 +335,10 @@ final class ChatViewController: JSQMessagesViewController {
         // print(token)
         request.httpMethod = "GET"
         
+        //urlString	String	"https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20160316T201633Z.3edd97cd482f5f99.44412180dddb0c1a07bd7ab38d4a746421932f28&text=Optional(\"Hi\")&lang=en-Optional(\"te\")"
         // print(request)
         
+        //data tesk
         let task = session.dataTask(with: request as URLRequest) {
             (data, response, error) -> Void in
             
@@ -319,55 +371,43 @@ final class ChatViewController: JSQMessagesViewController {
         task.resume()
         completed()
     }
-
-    
-
-
-    ///----------------------
-
-
-
-
-
-
-
-
-
     
     
+    //send photos messages
     func sendPhotoMessage() -> String? {
         let itemRef = messageRef.childByAutoId()
-        
         let messageItem = [
             "photoURL": imageURLNotSetKey,
             "senderId": senderId!,
             ]
         
         itemRef.setValue(messageItem)
-        
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
-        
         finishSendingMessage()
         return itemRef.key
     }
     
+    //image url
     func setImageURL(_ url: String, forPhotoMessageWithKey key: String) {
         let itemRef = messageRef.child(key)
         itemRef.updateChildValues(["photoURL": url])
     }
     
-    // MARK: UI and User Interaction
+    // UI and User Interaction
     
+    // outgoing view
     private func setupOutgoingBubble() -> JSQMessagesBubbleImage {
         let bubbleImageFactory = JSQMessagesBubbleImageFactory()
         return bubbleImageFactory!.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
     }
     
+    // incoming view
     private func setupIncomingBubble() -> JSQMessagesBubbleImage {
         let bubbleImageFactory = JSQMessagesBubbleImageFactory()
         return bubbleImageFactory!.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleLightGray())
     }
     
+    // accesory button pressed
     override func didPressAccessoryButton(_ sender: UIButton) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -380,14 +420,15 @@ final class ChatViewController: JSQMessagesViewController {
         present(picker, animated: true, completion:nil)
     }
     
+    // add message
     private func addMessage(withId id: String, name: String, text: String) {
         if let message = JSQMessage(senderId: id, displayName: name, text: text) {
             messages.append(message)
         }
     }
     
+    // add photo message
     private func addPhotoMessage(withId id: String, key: String, mediaItem: JSQPhotoMediaItem) {
-      
         if let message = JSQMessage(senderId: id, displayName: "", media: mediaItem) {
             messages.append(message)
             
@@ -399,18 +440,17 @@ final class ChatViewController: JSQMessagesViewController {
         }
     }
     
-    // MARK: UITextViewDelegate methods
+    //UITextViewDelegate methods
     
     override func textViewDidChange(_ textView: UITextView) {
         super.textViewDidChange(textView)
         // If the text is not empty, the user is typing
         isTyping = textView.text != ""
     }
-    
-}
+  }
 
-// MARK: Image Picker Delegate
-extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+ //Image Picker Delegate
+ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [String : Any]) {
         
@@ -448,6 +488,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
     }
     
+    // cancel picker
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion:nil)
     }

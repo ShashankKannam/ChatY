@@ -11,5 +11,6 @@ pod 'Firebase/Database'
 pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 pod 'JSQMessagesViewController'
+pod 'SwiftSpinner'
 
 end

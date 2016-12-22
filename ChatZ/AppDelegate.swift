@@ -7,6 +7,7 @@
 //
 
 import UIKit
+// impoting firebase
 import Firebase
 
 @UIApplicationMain
@@ -14,10 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-         FIRApp.configure()
+        // firebase configure and turning off anaytics to save data usage
+        FIRApp.configure()
         FIRAnalyticsConfiguration.sharedInstance().setAnalyticsCollectionEnabled(false)
         return true
     }

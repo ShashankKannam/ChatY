@@ -12,46 +12,46 @@ import Firebase
 typealias completionE =  () -> ()
 
 class RegisterGroupViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
-
-   var groupProfileImageUrl = ""
-    
-    var languageSelectted:String = ""
-    
-   var languageCode = ["English":"en","Japanese":"ja", "French":"fr", "Hindi":"hi", "Telugu":"te","Chinese":"zh","Russian":"ru"]
-   
-    var languages = [String]()
-    
+    // register the groups
     @IBOutlet weak var languageButtuon: UIButton!
-    
     
     @IBOutlet weak var languagePicker: UIPickerView!
     
-    
-    
     @IBOutlet weak var imageProfile: UIImageView!
+    
+    @IBOutlet weak var groupName: UITextField!
+    
+    @IBOutlet weak var datePIcker: UIDatePicker!
+    
+    @IBOutlet weak var nextBtn: UIButton!
+    
+    @IBOutlet weak var toGetDateBtn: UIButton!
+    
+    @IBOutlet weak var continueButton: UIButton!
+    
+    @IBOutlet weak var createButton: UIButton!
+    
+    var groupProfileImageUrl = ""
+    
+    var languageSelectted:String = ""
+    
+    var languageCode = ["English":"en","Japanese":"ja", "French":"fr", "Hindi":"hi", "Telugu":"te","Chinese":"zh","Russian":"ru"]
+    
+    var languages = [String]()
     
     var dateSelected: String = ""
     
     var group:Group!
     
-    @IBOutlet weak var groupName: UITextField!
-    
-    
-    @IBOutlet weak var datePIcker: UIDatePicker!
-    
-
+    //image picker
+    let picker = UIImagePickerController()
+ 
+    // dissmiss the view
     @IBAction func back(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
     
-
-    @IBOutlet weak var nextBtn: UIButton!
-    
-    @IBOutlet weak var toGetDateBtn: UIButton!
-    
-    
-    @IBOutlet weak var continueButton: UIButton!
-    
+    // select date
     @IBAction func selectDate(_ sender: UIButton) {
         groupName.isHidden = true
         toGetDateBtn.isHidden = true
@@ -61,7 +61,7 @@ class RegisterGroupViewController: UIViewController, UIImagePickerControllerDele
         languageButtuon.isHidden = true
     }
     
-    
+   // select language
     @IBAction func selectLanguage(_ sender: UIButton) {
         groupName.isHidden = true
         toGetDateBtn.isHidden = true
@@ -69,13 +69,13 @@ class RegisterGroupViewController: UIViewController, UIImagePickerControllerDele
         continueButton.isHidden = true
         createButton.isHidden = true
         languagePicker.isHidden = false
-       languageButtuon.isHidden = true
+        languageButtuon.isHidden = true
         nextBtn.isHidden = false
         
     }
   
+    // next pressed
     @IBAction func nextPressed(_ sender: UIButton) {
-        
         groupName.isHidden = false
         toGetDateBtn.isHidden = false
         datePIcker.isHidden = true
@@ -87,10 +87,9 @@ class RegisterGroupViewController: UIViewController, UIImagePickerControllerDele
         
     }
   
-    
-
+    // continue pressed
     @IBAction func continuePressed(_ sender: UIButton) {
-        
+       // date to get
         let dateFormatter = DateFormatter()
         dateFormatter.calendar = datePIcker.calendar
         dateFormatter.timeStyle = .medium
@@ -105,47 +104,36 @@ class RegisterGroupViewController: UIViewController, UIImagePickerControllerDele
         datePIcker.isHidden = true
         continueButton.isHidden = true
         languageButtuon.isHidden = false
-        
-        
         toGetDateBtn.setTitle(dateSelected, for: UIControlState.normal)
-
     }
-   
-    @IBOutlet weak var createButton: UIButton!
     
+    // create pressed
     @IBAction func createPressed(_ sender: UIButton) {
-        
+        // model group instance
         group = Group(groupName: groupName.text!, date: dateSelected, conversionLanguage: languageSelectted)
         print(group.date)
         print(group.groupName)
-        
-        
-            let newChannelRef = DataService.instance.mainRef.childByAutoId()
-            let channelItem = [
-                "name": group.groupName
+        // in firebase database
+        let newChannelRef = DataService.instance.mainRef.child("groups").childByAutoId()
+        let channelItem = [
+            "name": group.groupName,
+            "roupUpTo": group.date,
+            "groupLang": group.conversionLanguage,
             ]
-            newChannelRef.setValue(channelItem)
-       
-
+        newChannelRef.setValue(channelItem)
         
-        self.uploadImage {
-            DataService.instance.saveGroupChat(groupName: group.groupName, chatNumber: "1\(group.groupName)", senderID: "ChatZ", senderName: "Team ChatZ", message: "Welcome to \(group.groupName)!!")
-            DataService.instance.saveUserImage(group.groupName, profilePicURL: groupProfileImageUrl)
-        }
-        
-        
-        
-        
-        // Successfully registered
-        let alert = UIAlertController(title: "Successfully registered your group!", message: "Click 'OK' to chat", preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default) { (action) -> Void in
-            self.dismiss(animated: true, completion: nil)
-        }
-        alert.addAction(action)
-        self.present(alert, animated: true, completion: nil)
-        
+        // upload image
+        self.uploadImage(completed: {
+            // Successfully registered
+            let alert = UIAlertController(title: "Successfully registered your group!", message: "Click 'OK' to chat", preferredStyle: .alert)
+            let action = UIAlertAction(title: "OK", style: .default) { (action) -> Void in
+                self.dismiss(animated: true, completion: nil)
+            }
+            alert.addAction(action)
+            self.present(alert, animated: true, completion: nil)
+            
+        })
     }
-    
     
     
     override func viewDidLoad() {
@@ -153,63 +141,47 @@ class RegisterGroupViewController: UIViewController, UIImagePickerControllerDele
         datePIcker.isHidden = true
         continueButton.isHidden = true
         languagePicker.delegate=self
-        
         languagePicker.dataSource=self
-        
         languagePicker.isHidden = true
         nextBtn.isHidden = true
         
-        for(key, value) in languageCode{
+        for(key, _) in languageCode{
             languages.append(key)
         }
-        
+        self.hideKeyboardWhenTappedAround()
         // Do any additional setup after loading the view.
     }
 
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
-    
-    
-    
-    //image
-    
-    let picker = UIImagePickerController()
-    
+    // change default image
     @IBAction func changeImage(_ sender: UIButton) {
-        
-        
         // Action Sheet
         let alert:UIAlertController=UIAlertController(title: "Choose Image", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
-        
         // Action to openCamera()
         let cameraAction = UIAlertAction(title: "Camera", style: UIAlertActionStyle.default)
         {
             UIAlertAction in
             self.openCamera()
         }
-        
         // Action to openGallary()
         let gallaryAction = UIAlertAction(title: "Gallary", style: UIAlertActionStyle.default)
         {
             UIAlertAction in
             self.openGallary()
         }
-        
         // Action to cancel
         let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel)
-        
         // Adding all the actions
         alert.addAction(cameraAction)
         alert.addAction(gallaryAction)
         alert.addAction(cancelAction)
-        
         self.present(alert, animated: true, completion: nil)
     }
-    
     
     // Opens Camera
     func openCamera(){
@@ -255,68 +227,63 @@ class RegisterGroupViewController: UIViewController, UIImagePickerControllerDele
         {
             print("Something went wrong while picking image")
         }
-        
         picker.dismiss(animated: true, completion: nil)
-        
     }
+   
     
-    
+    // upload image to firebase
     func uploadImage(completed: completionE){
-        
         guard let uid = FIRAuth.auth()?.currentUser?.uid else {
             return
         }
-        
         let storageRef = DataService.instance.groupImagesStorageRef.child("\(uid)\(groupName.text)")
-        
+        // png representation
         if let uploadData = UIImagePNGRepresentation(imageProfile.image!){
             storageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
-                
                 if error != nil {
                     print(error.debugDescription)
                     return
                 }
-                
                 if let groupProfileImageUrl = metadata?.downloadURL()?.absoluteString {
-                    DataService.instance.saveGroupImage(self.groupName.text!, groupPicURL: groupProfileImageUrl)
+                    DataService.instance.saveGroupImage(self.group.groupName, groupPicURL: groupProfileImageUrl)
                 }
             })
         }
-        
+        // closure completed
          completed()
     }
     
-    
-    
-    
+    // number Of Components in picker
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-
+    
+     // number Of rows in picker
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return languages.count
     }
-   
+    
+     // title Of row in picker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return languages[row]
     }
     
+     // seleced row in picker
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         languageButtuon.isHidden = false
         languageSelectted = languages[row]
         languageButtuon.setTitle(languageSelectted, for: .normal)
-        
+    }
+}
+
+// extension to return keyboard
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
     }
     
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func dismissKeyboard() {
+        view.endEditing(true)
     }
-    */
-
 }

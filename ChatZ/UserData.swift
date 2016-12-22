@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+// user data to be stored model class
 class UserData{
     private var _firstName:String!
     
@@ -16,13 +16,13 @@ class UserData{
     
     private var _profilePic:UIImage!
     
-    
+   // initalizers
     init(uid:String, firstName: String, profilePic: UIImage) {
         _firstName = firstName
         _uid = uid
         _profilePic = profilePic
     }
-    
+  // getters and setters to access private variables
     var profilePic:UIImage{
         set{
             _profilePic = newValue

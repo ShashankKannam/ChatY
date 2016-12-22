@@ -7,22 +7,22 @@
 //
 import Foundation
 import UIKit
-
+// users model class
 class User{
-    
+   // getters and setters of users data
     private var _firstName:String!
     
     private var _uid:String!
     
     private var _profilePicURL:String!
     
-    
+   // initializers
     init(uid:String, firstName: String, profilePic: String) {
         _firstName = firstName
         _uid = uid
         _profilePicURL = profilePic
     }
-    
+    // getters and setters to access private variables
     var profilePicURL:String{
         set{
             _profilePicURL = newValue

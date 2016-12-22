@@ -7,24 +7,25 @@
 //
 
 import Foundation
-
+// groups model class
 class Group{
     
     private var _groupName:String!
     
     private var _date:String!
     
-     private var _conversionLanguage:String!
+    private var _conversionLanguage:String!
     
-   private var _groupID:String!
-    
+    private var _groupID:String!
+   
+    // initializers
     init(groupName: String, date: String, conversionLanguage:String) {
         _groupName = groupName
         _date = date
         _conversionLanguage = conversionLanguage
     }
     
-    
+  // getters and setters to access private variables
     var groupID:String{
         set{
             _groupID = newValue
@@ -34,7 +35,6 @@ class Group{
             
         }
     }
-    
     
     var groupName:String{
         set{
@@ -55,7 +55,6 @@ class Group{
         
         }
     }
-    
     
     var conversionLanguage:String{
         set{
